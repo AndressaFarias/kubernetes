@@ -1,0 +1,137 @@
+# O que é?
+
+* Sistema de orquestração de containers
+* Baseado no BORG (Google)
+* Nível de Maturidade = Graduado
+    * Caixa de áreia
+    * Incubado
+    * Graduado
+* Possui como principis elementos:
+    * master: especíe de gerente do cluster;
+    * node: 
+
+# Para quê serve?
+
+* Utilizado para criar clusters;
+
+# Arquitetura
+
+K8S possui dois panso de funcionamento:
+* Control Plane: 
+   * Controla o cluster;
+   * Inclui os processos que chamamos de _master_
+        * API Server: responsável pela comunicação interna do cluster;
+        * Scheduler: Decide onde serão "postos" os pods e objetos no cluster, após decidir, comunida o _API SERVER_
+        * Controller Manager: é um loop infinito de leitura da _API Server_ que verifica qual o estado desejado dos objeto que constituem o cluster e qual o estado atual do cluster; Quando é identificda alguma divergência passa para o _Scheduler_
+        * Kubelet
+    * Master é comum haver mas um _master_
+    * Nós _Workers_ são compostos por:
+        * Kubelet: braço do _control plane_ dentro do nó _worker_;
+        * Proxy: responsável  por faver a comunicação entre os serviços que rodam entro do _worker_ com o mundo eterno ( outro worker, nuvem, etc.)
+        * Runtime e Container: cri o / rkt / docker
+            * Cada _runtime_ é responsável por executar os _pods_
+
+* Data Plane: 
+
+# Jornada da Aplicação
+
+* Imagem:
+    * Está intimmente relacionada ao _runtime_ do que com o K8S;
+    * É um "_pacote_" que possui tudo para que a aplicação possa ser executada;
+* Container:
+    * É a cópia exata da imagem;
+    * Compartilham o _kernel_ do SO onde estão sendo executado;
+    * Não são executados de maneira eterna
+
+* **Pod**:
+    * É o menor objeto gerenciavel no K8S;
+        * Um Pod sozinho não garante o estado desejado;
+        * Esses objetos são utilizados para abstrair os containers que formam uma aplicação;
+    * Pode conter mais de um container, mas geralmente é apenas um;
+    * É o objeto que define como rodar um container (imagem, netooooo, volume, ports);
+    * Cada Pod possui o seu IP;
+    * Sidecar: acionam à aplicação funcionalidades que não foram previamente previstas;
+    * Não deve ser cesado diretamente para que a aplicação seja acessada deve ser criado um objeto _service_;
+
+* Service:
+    * Abstração de um serviço:
+    * Abstrai o acesso ao _Deployment_
+    * Funciona como um balanceador de carga entre o Pods
+    * Contém as portas do serviço e as informações de como o proxy pode acessar os pods;
+    * O _Service_ seleciona os Pods através do elementos especificados no _selector_;
+    
+
+* Ingress:
+    * Gerencia o acesso externo aos serviços em um cluster;
+    * Pode prover load balancing, SSL, virtual-hosting baseado no nome...
+    * Um _ingress_ não expõe portas ou protocolos arbitrrios. 
+
+* **Ingress Controller**
+    * o _ingress_ expõe roa HTTP e HTTPs externas para os Servicos do cluster;
+    * Sua rotas sõ configuradas por regras definidas no _ingress resouce_;
+    * Ingress trabalhaapenas com HTTP e HTTPs, para outros casos, devemos utilizar os _Services_ de tipo _NodePort_ ou _LoadBalancer_;
+    * Existem diversos _ingress Controllers_ no mercado.
+        * Traefik
+        * NGInx
+        * F5
+        * Istio
+
+* Volume:
+    * Perisistencia de dados enquanto o pod está sendo executado;
+    * Compartilhamento de dados entre o os containers que estão sendo executado dentro de um pod;
+* Secret
+    * Armazena informações sensíveis de forma segura e flixível.
+    * A aplicão deve referenciar os secrets que contém os dados que por ela serão usados;
+* ConigMap:
+    * Quando um caontainer sobe ele busca a informações desse arquivo;
+    * Usando princilamente para manter a aplicação portável entre amientes;
+OBJETOS: 
+* DaemontSet:
+    * Garante - através da leitura da API - que todos nodes rodem uma cópia de um pod;
+        * _exemplo:_ caso um componnte deve exstir em todos o nós criados, então ele garante que sempre que um novo nós seja criado esse componente seja instanciado.;
+        * _exemplo_ preia que um componente deva ser executado apenas nos nós master, sempre que um nó master for criado o componente será instanciado;
+
+* **Deployment**:
+    * Abstrai o objeto _POD_ para que o mesmo seja gerenciado devidamente elo K8S, ou seja, é adicionada a camada de persistencia de estado;
+    * Garante que os objetos de deploy descritos estejam no estado desejado;
+        * Baseia-se no _Pod_ e garante o estado desejado; 
+    * Faz a atalização gradual do pods;
+    * Gerencia o replicaset
+
+* ReplicaSet:
+    * Pode ser feito manualmente, mas perde-se os beneficionas de gerenciá-lo pelo _deployment_;
+    * Garate que haverá um número definido de pods rodandos;
+
+* **PersistentVolumeClaim**:
+    * O objeto PersistentVolumeClaim irá conter as configurações de requisição de consumo de recursos de um volume persistente criado pelo administrador do cluster.
+    * Para ter a persistencia de dados independente da existencia do pod;
+    * Volume compartilhado por múltiplos pods;
+        * para que isso seja possível é preciso ciar um _PersistentVolume_ - volume para storages
+    * Quando é feito um claim o volume passa a ser "teu";
+
+* **StatefulSet**:
+    * Idéia semelhamtes ao _deployment_ porém garante o estado;
+
+
+* Pod Disruption Budget
+    *   Limita o número de pods de uma aplicação replicada que ficam _down_ simultaneamente por disrupções voluntárias;
+        * DISRUPÇÃO VOLUNTÁRIA: por exemplo pode ser causada por atualizações que indiponibilizam nós temporarimanete;
+* Horiontal Pod Autosclaer
+    * Escala automáticamente o número de pods baseado na utilização de CPU (ou outras métricas utilizadas)
+* JOB:
+    * Cria um ou mais pods o garante que um número determinado de execuções termine com sucesso, caso esse número não seja atendido, irá subir novos podes até completar os requisitos;
+* CronJOB:
+    * Cria jos de acorod com uma agenda == equivale ao cronjob do linux;
+
+
+
+# Arquivo de configuração 
+
+# Boas Páticas
+
+    kubectl apply é o novo curl | sh
+
+Aplica  as configurações definidas com as permissões do user que a executar.
+
+# **Dashboard** 
+* A esalda da quantidade de Pods pode ser feita facilmente pelo _dashboard_

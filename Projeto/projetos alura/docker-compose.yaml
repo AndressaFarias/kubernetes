@@ -1,0 +1,23 @@
+version: "3.0"
+# as configurações necessáriaspara criarmos o container do banco de dados, o qual chamaremos de "db"
+services:
+  db:
+    # vamos especificar a imagem que será utilizada pelo container
+    image: mysql:5.7.19
+    
+    # vamos especificar as variaveis de ambiente
+    environment:
+      - MYSQL_DATABASE=loja
+      - MYSQL_USER=root
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    
+    # Vamos mapear o volume o container do MySQL = Diretório do Host:
+    volumes:
+      - /c/Users/andressa.farias/Documents/Projetos/E-learning/volumes/volume_mysql:/var/lib/mysql
+  web:
+    image: rafanercessian/aplicacao-loja:v1 # aplicacao-loja:v1, se fose utilizar o dockerfile
+    # Porta Host : Porta Container
+    ports: 
+      - 8080:80
+    depends_on:
+      - db
