@@ -1,6 +1,6 @@
 Kubernetes
 
-**progressDeadlineSeconds:** Usado para auxiliar dacausa de possivis falhs no momento do deploy.
+**progressDeadlineSeconds:** Usado para auxiliar da causa de possiveis falhas no momento do deploy.
 Indica o número de segundos que o Controller do Deployment aguarda antes de indicar (no status do Deployment ) que o progresso do Deployment foi interrompido.
 
 **revisionHistoryLimit:** Esse campo pode ser definido em um Deployment para especificar quantos _ReplicaSet_ antigos por _Deploymente_ devem ser mantidos.
@@ -17,6 +17,10 @@ can be “Recreate” or “RollingUpdate”. “RollingUpdate” is the default
 PORTUGUÊS
 pode ser "Recreate" ou "RollingUpdate". "RollingUpdate" é o valor padrão.
 
+
+**.spec.template**
+Esse campo possui os subcampos:
+* Os Pods são rotulados como `app: nginx` usando o campo labels.
 
 **Recreate Deployment**
 All existing Pods are killed before new ones are created when .spec.strategy.type==Recreate.
@@ -57,6 +61,12 @@ O Kubernetes recupera mensagens de finalização do arquivo de mensagens de fina
 [https://kubernetes.io/docs/tasks/debug-application-cluster/determine-reason-pod-failure/#customizing-the-termination-message]
 
 **terminationMessagePolicy**
-lém disso, os usuários podem definir o terminationMessagePolicycampo de um contêiner para personalização adicional. Esse campo é padronizado como “ File”, o que significa que as mensagens de encerramento são recuperadas apenas do arquivo de mensagens de encerramento. Ao definir terminationMessagePolicycomo “ FallbackToLogsOnError”, você pode dizer ao Kubernetes para usar o último pedaço da saída do log do contêiner se o arquivo de mensagem de encerramento estiver vazio e o contêiner sair com um erro. A saída do log é limitada a 2048 bytes ou 80 linhas, o que for menor.
+lém disso, os usuários podem definir o terminationMessagePolicy campo de um contêiner para personalização adicional. Esse campo é padronizado como “ File”, o que significa que as mensagens de encerramento são recuperadas apenas do arquivo de mensagens de encerramento. Ao definir terminationMessagePolicycomo “ FallbackToLogsOnError”, você pode dizer ao Kubernetes para usar o último pedaço da saída do log do contêiner se o arquivo de mensagem de encerramento estiver vazio e o contêiner sair com um erro. A saída do log é limitada a 2048 bytes ou 80 linhas, o que for menor.
 
 [https://kubernetes.io/docs/tasks/debug-application-cluster/determine-reason-pod-failure/]
+
+
+**.spec.volumes**
+Para usar um volume, um Pod especifica quais volumes fornecer para o Pod (o campo .spec.volumes) e onde montá-los nos Containers ( no campo .spec.containers[*].volumeMounts)
+
+[https://kubernetes.io/docs/concepts/storage/volumes/#background]

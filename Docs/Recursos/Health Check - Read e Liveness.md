@@ -27,3 +27,4 @@ O comando definido é executado dentro container. se o retorno de status for igu
 ## TCP
 É criada a conexão TCP com o _Pod_ se ela ocorrer com sucesso o _Pod_ está ok.
 
+[https://www.youtube.com/watch?v=brQh8bjXL9Q]
