@@ -17,8 +17,7 @@ spec:
           volumes:
           - name: html
             gitRepo:
-              repository: https://github.com/luksa/kubia-website-example.git
-              #repository: https://bitbucket.org/compassouoldiveo/sistemas-internos.datalake.aws.git
+              repository:
               revision: Docker
               directory: .  
           restartPolicy: OnFailure
