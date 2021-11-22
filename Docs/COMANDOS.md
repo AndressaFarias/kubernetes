@@ -17,3 +17,7 @@ kubectl logs <pod-name> -c <conatiner_name>
 ​[Ontem 17:02] Vitor Chaves de Oliveira
     kubectl get pods POD_NAME_HERE -o jsonpath='{.spec.containers[*].name}'
  
+
+
+retornar imagem que está sendo executada no container 
+kubectl get pods POD_NAME_HERE -o jsonpath='{.spec.template.spec.image}'
