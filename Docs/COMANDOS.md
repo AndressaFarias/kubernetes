@@ -21,3 +21,8 @@ kubectl logs <pod-name> -c <conatiner_name>
 
 retornar imagem que está sendo executada no container 
 kubectl get pods POD_NAME_HERE -o jsonpath='{.spec.template.spec.image}'
+
+
+verificar a porta que o container está respondendo para fazer o port-forward
+kubectl -n monitoring get pod prometheus-prometheus-kube-prometheus-prometheus-0 --template='{{(index (index .spec.containers 0).ports 0).containerPort}}{{"\n"}}'
+
