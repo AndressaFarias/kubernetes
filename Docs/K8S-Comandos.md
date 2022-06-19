@@ -41,3 +41,8 @@
 | Comando                 | Descrição                                   |
 | ----------------------- | ------------------------------------------- |
 | kubectl get deployments | Retorna quais Deployments estão em execução |
+
+
+kubectl get pod -l app.kubernetes.io/name=kube-state-metrics --all-namespaces
+
+
